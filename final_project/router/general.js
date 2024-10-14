@@ -26,8 +26,18 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const author = req.params.author;
+  if(author){
+    let filtered_books = Object.values(books).filter((book) => book.author === author)
+        .map((book) => {
+            return {
+                title: book.title,
+                reviews: book.reviews,
+            };
+        });
+    return res.status(200).send("Author "+author+" " + JSON.stringify(filtered_books, null, 4));
+  }
+  res.send("Author is not define").status(200);
 });
 
 // Get all books based on title
