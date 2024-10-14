@@ -42,8 +42,18 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const title = req.params.title;
+    if(title){
+      let filtered_books = Object.values(books).filter((book) => book.title === title)
+          .map((book) => {
+              return {
+                  author: book.author,
+                  reviews: book.reviews,
+              };
+          });
+      return res.status(200).send("Title "+title+" " + JSON.stringify(filtered_books, null, 4));
+    }
+    res.send("Author is not define").status(200);
 });
 
 //  Get book review
