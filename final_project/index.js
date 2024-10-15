@@ -19,6 +19,7 @@ app.use("/customer/auth/*", function auth(req, res, next){
                 req.user = user;
                 next(); // Proceed to the next middleware
             } else {
+                console.log(err);
                 return res.status(403).json({ message: "User not authenticated" });
             }
         });
