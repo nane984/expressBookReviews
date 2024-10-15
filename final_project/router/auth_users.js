@@ -56,11 +56,16 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-    
+    const ISBN = req.params.isbn;
+    const user = req.user.data;
+    const comment = req.body.comment;
 
-
-    res.send("Not yet implemented").status(300);
-    
+    if(user){
+        books[ISBN].reviews[user] = {comment};
+        return res.status(200).send(books[ISBN].reviews);
+    }else{
+        return res.status(404).json({ message: "Error cannot write comment" });
+    }
     
 });
 
