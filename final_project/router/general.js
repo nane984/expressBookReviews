@@ -3,6 +3,11 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+let prompt = require('prompt-sync')();
+
+const getAllBooks = new Promise((resolve, reject) => {
+
+});
 
 
 public_users.post("/register", (req,res) => {
@@ -21,7 +26,19 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-    res.send(JSON.stringify(books, null, 4)).status(200);
+    let getAllBooks = new Promise((resolve, reject) => {
+        try {
+            // Reading the books
+            books
+            // Resolving the promise with the data if read successfully
+            resolve(books);
+        } catch (err) {
+            // Rejecting the promise if an error occurs
+            reject(err);
+        }
+    });
+    getAllBooks.then((books) =>  res.send(JSON.stringify(books, null, 4)).status(200),
+                     (err) =>    res.status(404).json({message: "Books is not found"}));
 });
 
 // Get book details based on ISBN
