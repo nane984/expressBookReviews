@@ -69,6 +69,19 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     
 });
 
+// Delete the book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const ISBN = req.params.isbn;
+    const user = req.user.data;
+
+    if(user){
+        delete books[ISBN].reviews[user];
+        return res.status(200).send("Delete review from "+ user +" on the book " + books[ISBN].title);
+    }else{
+        return res.status(404).json({ message: "Error cannot write comment" });
+    }
+})
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
