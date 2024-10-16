@@ -66,16 +66,28 @@ public_users.get('/isbn/:isbn',function (req, res) {
 public_users.get('/author/:author',function (req, res) {
   const author = req.params.author;
   if(author){
-    let filtered_books = Object.values(books).filter((book) => book.author === author)
-        .map((book) => {
-            return {
-                title: book.title,
-                reviews: book.reviews,
-            };
-        });
-    return res.status(200).send("Author "+author+" " + JSON.stringify(filtered_books, null, 4));
+    let getBookOnISBN = new Promise((resolve, reject) => {
+        try {
+            // Finding book
+            let filtered_books = Object.values(books)
+                                    .filter((book) => book.author === author)
+                                    .map((book) => {
+                                                return {
+                                                    title: book.title,
+                                                    reviews: book.reviews,
+                                                };
+            });
+            // Resolving the promise with the data if read successfully
+            resolve(filtered_books);
+        } catch (err) {
+            // Rejecting the promise if an error occurs
+            reject(err);
+        }
+        
+    })
+    getBookOnISBN.then((filtered) =>  res.send("Author "+author+" " + JSON.stringify(filtered, null, 4)),
+                     (err) =>    res.status(303).json({message: "Books is not found"}));
   }
-  res.send("Author is not define").status(200);
 });
 
 // Get all books based on title
