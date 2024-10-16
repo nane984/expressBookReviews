@@ -94,16 +94,28 @@ public_users.get('/author/:author',function (req, res) {
 public_users.get('/title/:title',function (req, res) {
     const title = req.params.title;
     if(title){
-      let filtered_books = Object.values(books).filter((book) => book.title === title)
-          .map((book) => {
-              return {
-                  author: book.author,
-                  reviews: book.reviews,
-              };
-          });
-      return res.status(200).send("Title "+title+" " + JSON.stringify(filtered_books, null, 4));
+        let getBooksByTitle = new Promise((resolve, reject) => {
+            try{
+                // Finding book
+                let filtered_books = Object.values(books)
+                                            .filter((book) => book.title === title)
+                                            .map((book) => {
+                                                return {
+                                                    author: book.author,
+                                                    reviews: book.reviews,
+                                                };
+                                            });
+                // Resolving the promise with the data if read successfully
+                resolve(filtered_books);
+            }catch{
+                // Rejecting the promise if an error occurs
+                reject(err);
+            }
+        })
+
+        getBooksByTitle.then((filtered) =>  res.send("Title "+title+" " + JSON.stringify(filtered, null, 4)),
+        (err) =>    res.status(303).json({message: "Books is not found"}));
     }
-    res.send("Author is not define").status(200);
 });
 
 //  Get book review
